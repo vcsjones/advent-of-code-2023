@@ -33,7 +33,6 @@ MAIN-PARA.
                 AT END MOVE 'Y' TO WS-EOF
                 NOT AT END
                 PERFORM READ-CALIBRATION-PARA
-                DISPLAY WS-CALIBRATION-VALUE
                 ADD WS-CALIBRATION-VALUE TO WS-TOTAL
             END-READ
         END-PERFORM.
@@ -47,8 +46,6 @@ READ-CALIBRATION-PARA.
     MOVE 'XX' TO WS-NUM
 
     PERFORM UNTIL WS-LINE-POS > LENGTH OF WS-CALIBRATION
-        MOVE WS-CALIBRATION(WS-LINE-POS:1) TO WS-CHAR
-
         IF WS-CALIBRATION(WS-LINE-POS:3) = 'one'
             MOVE 1 TO WS-CHAR
         ELSE
@@ -75,6 +72,8 @@ READ-CALIBRATION-PARA.
                                     ELSE
                                         IF WS-CALIBRATION(WS-LINE-POS:4) = 'nine'
                                             MOVE 9 TO WS-CHAR
+                                        ELSE
+                                            MOVE WS-CALIBRATION(WS-LINE-POS:1) TO WS-CHAR
                                         END-IF
                                     END-IF
                                 END-IF
