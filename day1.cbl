@@ -15,8 +15,8 @@ FD DAY1DATA.
 WORKING-STORAGE SECTION.
 01 WS-CALIBRATION PIC X(99).
 01 WS-NUM.
-    05 WS-FIRST PIC 9(1).
-    05 WS-LAST PIC 9(1).
+    05 WS-FIRST PIC X(1).
+    05 WS-LAST PIC X(1).
 77 WS-CALIBRATION-VALUE PIC 9(2).
 77 WS-EOF PIC A(1).
 77 WS-LINE-POS PIC 9(3).
@@ -33,6 +33,7 @@ MAIN-PARA.
                 AT END MOVE 'Y' TO WS-EOF
                 NOT AT END
                 PERFORM READ-CALIBRATION-PARA
+                DISPLAY WS-CALIBRATION-VALUE
                 ADD WS-CALIBRATION-VALUE TO WS-TOTAL
             END-READ
         END-PERFORM.
@@ -42,21 +43,56 @@ MAIN-PARA.
     STOP RUN.
 
 READ-CALIBRATION-PARA.
-    MOVE 0 TO WS-FIRST
-    MOVE 0 TO WS-LAST
-    MOVE 0 TO WS-LINE-POS
-    MOVE 0 TO WS-NUM
+    MOVE 1 TO WS-LINE-POS
+    MOVE 'XX' TO WS-NUM
 
     PERFORM UNTIL WS-LINE-POS > LENGTH OF WS-CALIBRATION
         MOVE WS-CALIBRATION(WS-LINE-POS:1) TO WS-CHAR
-        ADD 1 to WS-LINE-POS
+
+        IF WS-CALIBRATION(WS-LINE-POS:3) = 'one'
+            MOVE 1 TO WS-CHAR
+        ELSE
+            IF WS-CALIBRATION(WS-LINE-POS:3) = 'two'
+                MOVE 2 TO WS-CHAR
+            ELSE
+                IF WS-CALIBRATION(WS-LINE-POS:5) = 'three'
+                    MOVE 3 TO WS-CHAR
+                ELSE
+                    IF WS-CALIBRATION(WS-LINE-POS:4) = 'four'
+                        MOVE 4 TO WS-CHAR
+                    ELSE
+                        IF WS-CALIBRATION(WS-LINE-POS:4) = 'five'
+                            MOVE 5 TO WS-CHAR
+                        ELSE
+                            IF WS-CALIBRATION(WS-LINE-POS:3) = 'six'
+                                MOVE 6 TO WS-CHAR
+                            ELSE
+                                IF WS-CALIBRATION(WS-LINE-POS:5) = 'seven'
+                                    MOVE 7 TO WS-CHAR
+                                ELSE
+                                    IF WS-CALIBRATION(WS-LINE-POS:5) = 'eight'
+                                        MOVE 8 TO WS-CHAR
+                                    ELSE
+                                        IF WS-CALIBRATION(WS-LINE-POS:4) = 'nine'
+                                            MOVE 9 TO WS-CHAR
+                                        END-IF
+                                    END-IF
+                                END-IF
+                            END-IF
+                        END-IF
+                    END-IF
+                END-IF
+            END-IF
+        END-IF
 
         IF WS-CHAR IS NUMERIC
-            IF WS-FIRST = 0
+            IF WS-FIRST = 'X'
                 MOVE WS-CHAR TO WS-FIRST
             END-IF
 
             MOVE WS-CHAR TO WS-LAST
         END-IF
+
+        ADD 1 to WS-LINE-POS
     MOVE WS-NUM TO WS-CALIBRATION-VALUE
     END-PERFORM.
